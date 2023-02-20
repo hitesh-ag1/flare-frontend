@@ -60,7 +60,7 @@ export default function Example() {
           </div>
           <div className="hidden lg:flex lg:gap-x-12">
             {navigation.map((item) => (
-              <a key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gray-900  hover:text-green-600">
+              <a key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gray-900 hover:text-green-600">
                 {item.name}
               </a>
             ))}
@@ -94,7 +94,7 @@ export default function Example() {
                     <a
                       key={item.name}
                       href={item.href}
-                      className="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-400/10"
+                      className="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-400/10 hover:text-green-600"
                     >
                       {item.name}
                     </a>
@@ -103,7 +103,7 @@ export default function Example() {
                 <div className="py-6">
                   <a
                     href="#"
-                    className="-mx-3 block rounded-lg py-2.5 px-3 text-base font-semibold leading-6 text-gray-900 hover:bg-gray-400/10"
+                    className="-mx-3 block rounded-lg py-2.5 px-3 text-base font-semibold leading-6 text-gray-900 hover:bg-gray-400/10 hover:text-green-600"
                   >
                     Log in
                   </a>
@@ -116,20 +116,9 @@ export default function Example() {
       <main>
         <div className="relative px-6 lg:px-8">
           <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-            {/*
-                <div className="hidden sm:mb-8 sm:flex sm:justify-center">
-                <div className="relative rounded-full py-1 px-3 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
-                    Announcing our next round of funding.{' '}
-                    <a href="#" className="font-semibold text-green-600 hover:text-gray-900">
-                    <span className="absolute inset-0" aria-hidden="true" />
-                    Read more <span aria-hidden="true">&rarr;</span>
-                    </a>
-                </div>
-                </div>
-            */}
             <div className="text-center">
               <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-                Data platform for AI in medical imaging
+                Step 1: Select data providers
               </h1>
               <p className="mt-6 text-lg leading-8 text-gray-600">
                 Whether you need data to execute clinical trials or train your models, we have it all! Annotated, clean machine ready data available in a privacy-preserving manner.
