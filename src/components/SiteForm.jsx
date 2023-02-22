@@ -1,6 +1,5 @@
 import React from 'react';
 import { Fragment, useState } from 'react'
-import { useFormik } from 'formik';
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
@@ -15,25 +14,21 @@ const sites = [
 
 export default function SiteForm() {
     const [selected, setSelected] = useState([sites[0]]);
-    const formik = useFormik({
-        initialValues: {
-        email: '',
-        },
-        onSubmit: values => {
-        alert(JSON.stringify(values, null, 2));
-        },
-    });
+    const handleSubmit = () => {
+        alert(selected.map(item => item.value).join(', '));
+    };
+
     return (
         <div className='w-full min-w-[500px]'>
         <p className='pb-8 text-left text-2xl'>Step 1: Select Data Sites</p>
-    <form >
-    <div class="md:flex md:items-center mb-6">
-    <div class="md:w-1/3">
-      <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="inline-full-name">
+    <form>
+    <div className="md:flex md:items-center mb-6">
+    <div className="md:w-1/3">
+      <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
         Data Sites
       </label>
     </div>
-    <div class="md:w-2/3">
+    <div className="md:w-2/3">
     <Listbox multiple value={selected} onChange={setSelected} className="w-full max-w-xs min-w-[150px]">
         <div className="relative mt-1">
           <Listbox.Button className="border-2 border-gray-200 rounded relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
@@ -86,8 +81,8 @@ export default function SiteForm() {
       </Listbox>
     </div>
   </div>
-  <div class="grid justify-items-center pt-4">
-      <button class="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
+  <div className="grid justify-items-center pt-4">
+      <button className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" onClick={handleSubmit}>
         Submit
       </button>
   </div>
