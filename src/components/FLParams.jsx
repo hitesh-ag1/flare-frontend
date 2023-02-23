@@ -21,7 +21,7 @@ export default function SiteForm() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const navigate = useNavigate()
     const handleSubmit = () => {
-        navigate('/codeeditor1');
+        // navigate('/codeeditor1');
         // alert(selected.map(item => item.value).join(', '));
     };
 
@@ -53,67 +53,52 @@ export default function SiteForm() {
         </svg>
       </div>
         <div className='w-full min-w-[500px]'>
-        <p className='pb-8 text-left text-2xl'>Step 1: Select Data Sites</p>
+        <p className='pb-8 text-left text-2xl'>Step 4: Federated Learning Parameters</p>
     <form>
     <div className="md:flex md:items-center mb-6">
     <div className="md:w-1/3">
       <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
-        Data Sites
+      Aggregation Epochs
       </label>
     </div>
     <div className="md:w-2/3">
-    <Listbox multiple value={selected} onChange={setSelected} className="w-full max-w-xs min-w-[150px]">
-        <div className="relative mt-1">
-          <Listbox.Button className="border-2 border-gray-200 rounded relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-            <span className="block truncate">{selected.map(item => item.value).join(', ')}</span>
-            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-              <ChevronUpDownIcon
-                className="h-5 w-5 text-gray-400"
-                aria-hidden="true"
-              />
-            </span>
-          </Listbox.Button>
-          <Transition
-            as={Fragment}
-            leave="transition ease-in duration-100"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {sites.map((person, personIdx) => (
-                <Listbox.Option
-                  key={personIdx}
-                  className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
-                    }`
-                  }
-                  value={person}
-                >
-                  {({ selected }) => (
-                    <>
-                      <span
-                        className={`block truncate ${
-                          selected ? 'font-medium' : 'font-normal'
-                        }`}
-                      >
-                        {person.value}
-                      </span>
-                      {selected ? (
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                          <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                        </span>
-                      ) : null}
-                    </>
-                  )}
-                </Listbox.Option>
-              ))}
-            </Listbox.Options>
-          </Transition>
-        </div>
-      </Listbox>
+      <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name" type="text" value="Jane Doe" />
     </div>
   </div>
+
+  <div className="md:flex md:items-center mb-6">
+    <div className="md:w-1/3">
+      <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+      Learning Rate
+      </label>
+    </div>
+    <div className="md:w-2/3">
+      <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name" type="text" value="Jane Doe" />
+    </div>
+  </div>
+
+  <div className="md:flex md:items-center mb-6">
+    <div className="md:w-1/3">
+      <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+      Number of rounds
+      </label>
+    </div>
+    <div className="md:w-2/3">
+      <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name" type="text" value="Jane Doe" />
+    </div>
+  </div>
+
+  <div className="md:flex md:items-center mb-6">
+    <div className="md:w-1/3">
+      <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+      Minimum Number of Clients
+      </label>
+    </div>
+    <div className="md:w-2/3">
+      <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name" type="text" value="Jane Doe" />
+    </div>
+  </div>
+
   <div className="grid justify-items-center pt-4">
       <button className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" onClick={handleSubmit}>
         Submit
