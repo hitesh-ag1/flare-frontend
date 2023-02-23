@@ -10,10 +10,10 @@ import { useNavigate } from "react-router-dom";
 const sites = [
     { name: 'site-1', value: 'site-1' },
     { name: 'site-2', value: 'site-2' },
-    { name: 'site-3', value: 'site-3' },
-    { name: 'site-4', value: 'site-4' },
-    { name: 'site-5', value: 'site-5' },
-    { name: 'site-6', value: 'site-6' },
+    // { name: 'site-3', value: 'site-3' },
+    // { name: 'site-4', value: 'site-4' },
+    // { name: 'site-5', value: 'site-5' },
+    // { name: 'site-6', value: 'site-6' },
   ]
 
 export default function SiteForm() {

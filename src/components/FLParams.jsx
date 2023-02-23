@@ -6,6 +6,7 @@ import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import logo from '../assets/logo.png';
 import { useNavigate } from "react-router-dom";
+import api from '../../diagnokareApi';
 
 const sites = [
     { name: 'site-1', value: 'site-1' },
@@ -16,11 +17,32 @@ const sites = [
     { name: 'site-6', value: 'site-6' },
   ]
 
-export default function SiteForm() {
-    const [selected, setSelected] = useState([sites[0]]);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+export default function FLParams() {
+    const [agg, setAgg] = useState("1");
+    const [lr, setLR] = useState("0.01");
+    const [rounds, setRounds] = useState("1");
+    const [nclients, setNClients] = useState("2");
     const navigate = useNavigate()
+
+    const handleAgg = (e) => {
+      setAgg(e.target.value);
+    };
+
+    const handleLR = (e) => {
+      setLR(e.target.value);
+    };
+
+    const handleNClients = (e) => {
+      setNClients(e.target.value);
+    };
+
+    const handleRounds = (e) => {
+      setRounds(e.target.value);
+    };
+
     const handleSubmit = () => {
+      // console.log(agg, lr, rounds, nclients)
+      api.postFLParams(agg, lr, rounds, nclients);
         // navigate('/codeeditor1');
         // alert(selected.map(item => item.value).join(', '));
     };
@@ -57,45 +79,45 @@ export default function SiteForm() {
     <form>
     <div className="md:flex md:items-center mb-6">
     <div className="md:w-1/3">
-      <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+      <label className="block text-gray-900 font-bold md:text-right mb-1 md:mb-0 pr-4">
       Aggregation Epochs
       </label>
     </div>
     <div className="md:w-2/3">
-      <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name" type="text" value="Jane Doe" />
+      <input className="bg-white appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name" type="text" value={agg} onChange={handleAgg} />
     </div>
   </div>
 
   <div className="md:flex md:items-center mb-6">
     <div className="md:w-1/3">
-      <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+      <label className="block text-gray-900 font-bold md:text-right mb-1 md:mb-0 pr-4">
       Learning Rate
       </label>
     </div>
     <div className="md:w-2/3">
-      <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name" type="text" value="Jane Doe" />
+      <input className="bg-white appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name" type="text" value={lr} onChange={handleLR} />
     </div>
   </div>
 
   <div className="md:flex md:items-center mb-6">
     <div className="md:w-1/3">
-      <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+      <label className="block text-gray-900 font-bold md:text-right mb-1 md:mb-0 pr-4">
       Number of rounds
       </label>
     </div>
     <div className="md:w-2/3">
-      <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name" type="text" value="Jane Doe" />
+      <input className="bg-white appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name" type="text" value={rounds} onChange={handleRounds} />
     </div>
   </div>
 
   <div className="md:flex md:items-center mb-6">
     <div className="md:w-1/3">
-      <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+      <label className="block text-gray-900 font-bold md:text-right mb-1 md:mb-0 pr-4">
       Minimum Number of Clients
       </label>
     </div>
     <div className="md:w-2/3">
-      <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name" type="text" value="Jane Doe" />
+      <input className="bg-white appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name" type="text" value={nclients} onChange={handleNClients} />
     </div>
   </div>
 

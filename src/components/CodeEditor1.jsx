@@ -13,6 +13,7 @@ import '@codemirror/lang-python';
 import brace from 'brace';
 import 'brace/theme/monokai';
 import { useNavigate } from "react-router-dom";
+import api from '../../diagnokareApi';
 
 const sites = [
     { name: 'site-1', value: 'site-1' },
@@ -24,12 +25,48 @@ const sites = [
   ]
 
 export default function CodeEditor1() {
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState(`
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torchvision.models.mobilenet import mobilenet_v2
+
+class MobileNetCNN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        mobile = mobilenet_v2(pretrained=False)
+        self.mobilenet_layer = nn.Sequential(*list(mobile.children())[:-1])
+        self.fc1 = nn.Linear(1280, 512)
+        self.fc2 = nn.Linear(512, 14)
+        self.dropout = nn.Dropout(0.5)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        x = self.mobilenet_layer(x)
+        x = F.adaptive_avg_pool2d(x, 1).reshape(-1, 1280)
+        x = self.dropout(x)
+        x = self.fc1(x)
+        x = self.dropout(x)
+        x = self.fc2(x)
+        x = self.sigmoid(x)
+        return x
+
+def getModel():
+    return MobileNetCNN()
+  `);
+  const [name, setName] = useState("MobileNetCNN");
+
+  const handleName = (e) => {
+    setName(e.target.value);
+  };
+
     const editorRef = useRef(null);
     const navigate = useNavigate();
     const handleSubmit = (event) => {
       event.preventDefault();
-      console.log(selected);
+      var code = (selected.replace(/(?:\r\n|\r|\n)/g, '\\n'));
+      // console.log(code, name);
+      api.postNN(code, name);
       navigate('/codeeditor2');
     }
   
@@ -65,9 +102,25 @@ export default function CodeEditor1() {
         <p className='pb-8 text-left text-2xl'>Step 2: Code Editor for Neural Network </p>
     <form>
     <div className="md:flex md:items-center mb-6">
+    <div className="md:w-1/5">
+      <label className="block text-gray-900 font-bold md:text-right mb-1 md:mb-0 pr-4">
+      Class Name
+      </label>
+    </div>
+    <div className="md:w-4/5">
+      <input className="bg-white appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500 min-w-[800px]" id="inline-full-name" type="text" value={name} onChange={handleName} />
+    </div>
+  </div>
+  <div className="md:flex mb-6">
+  <div className="md:w-1/5">
+      <label className="block text-gray-900 font-bold md:text-right mb-1 md:mb-0 pr-4">
+      Code
+      </label>
+    </div>
+    <div className="md:w-4/5">
     <CodeMirror
         ref={editorRef}
-        value="// Write your model neural network code in Python"
+        value={selected}
         options={{
           mode: 'python',
           theme: 'monokai',
@@ -77,9 +130,10 @@ export default function CodeEditor1() {
           setSelected(editor);
         }}
         width="100%"
-        height="200px"
+        height="400px"
         className='min-w-[800px] text-left'
       />
+      </div>
   </div>
   <div className="grid justify-items-center pt-4">
       <button className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" onClick={handleSubmit}>

@@ -13,6 +13,7 @@ import '@codemirror/lang-python';
 import brace from 'brace';
 import 'brace/theme/monokai';
 import { useNavigate } from "react-router-dom";
+import api from '../../diagnokareApi';
 
 const sites = [
     { name: 'site-1', value: 'site-1' },
@@ -24,12 +25,46 @@ const sites = [
   ]
 
 export default function CodeEditor2() {
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState(`
+import numpy as np
+def metricSupportFn(inputs, outputs, labels, total, correct):
+    labels = np.array([t.numpy() for t in labels])
+    outputs = outputs.cpu().numpy()
+    outputs_rounded = np.array(np.matrix.round(outputs))
+    vals = []
+    for i in (outputs_rounded == labels):
+        vals.append(i.sum()/len(i))
+    total += len(vals)
+    correct += np.array(vals).sum()
+    return total, correct
+
+def metricCalcFn(correct, total):
+    return (correct / float(total))
+
+def optimizerFn(model, lr):
+    import torch.optim as optim
+    return optim.SGD(model.parameters(), lr=lr, momentum=0.9)
+
+def criterionFn():
+    import torch
+    return torch.nn.CrossEntropyLoss()
+
+def transformFn():
+    from torchvision import transforms
+    t = transforms.Compose([
+                transforms.Resize((224, 224)),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomVerticalFlip(),
+                transforms.ToTensor()
+    ])
+    return t
+`);
     const editorRef = useRef(null);
     const navigate = useNavigate();
     const handleSubmit = (event) => {
       event.preventDefault();
-      console.log(selected);
+      var code = (selected.replace(/(?:\r\n|\r|\n)/g, '\\n'));
+      api.postModelParams(code);
       navigate('/flparams');
     }
   
@@ -67,7 +102,7 @@ export default function CodeEditor2() {
     <div className="md:flex md:items-center mb-6">
     <CodeMirror
         ref={editorRef}
-        value="// Write your model neural network code in Python"
+        value={selected}
         options={{
           mode: 'python',
           theme: 'monokai',
@@ -77,7 +112,7 @@ export default function CodeEditor2() {
           setSelected(editor);
         }}
         width="100%"
-        height="200px"
+        height="500px"
         className='min-w-[800px] text-left'
       />
   </div>
