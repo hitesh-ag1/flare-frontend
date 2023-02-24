@@ -40,10 +40,15 @@ export default function FLParams() {
       setRounds(e.target.value);
     };
 
-    const handleSubmit = () => {
-      // console.log(agg, lr, rounds, nclients)
-      api.postFLParams(agg, lr, rounds, nclients);
-        // navigate('/codeeditor1');
+    const handleSubmit = async(event) => {
+      event.preventDefault();
+      var res = await api.postFLParams(agg, lr, rounds, nclients);
+      if(res[0] == 1){
+        navigate('/starttraining');
+      }
+      else{
+        alert("Error code: "+res[1]+" with message "+res[2]);
+      }
         // alert(selected.map(item => item.value).join(', '));
     };
 

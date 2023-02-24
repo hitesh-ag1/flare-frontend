@@ -6,6 +6,7 @@ import SiteForm from './components/SiteForm';
 import CodeEditor1 from './components/CodeEditor1';
 import CodeEditor2 from './components/CodeEditor2';
 import FLParams from './components/FLParams';
+import StartTraining from './components/StartTraining';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
           <Route path="/codeeditor1" element={<CodeEditor1 />} />
           <Route path="/codeeditor2" element={<CodeEditor2 />} />
           <Route path="/flparams" element={<FLParams />} />
+          <Route path="/starttraining" element={<StartTraining />} />
         </Routes>
       </Router>
   )

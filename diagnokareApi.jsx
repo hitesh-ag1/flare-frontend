@@ -5,21 +5,47 @@ var backendURL = 'http://localhost:8000/';
 // var orthancURL = 'https://demo-orthanc.diagnokare.com/';
 // var backendURL = 'https://demo-backend.diagnokare.com/';
 
-instance.interceptors.response.use(response => {
-    return response;
- }, error => {
-    return error;
- });
+// instance.interceptors.response.use(response => {
+//     return response;
+//  }, error => {
+//     return error;
+//  });
 
 export default {
+    errorHandler(error){
+        try {
+            return [0, error.response.status, error.response.data.detail]
+    } catch (error2) {
+        return [0, '404', error.message]
+    }
+    },
     async postNN(code, className){
-        return instance.post(backendURL + "modelnn?code="+code+"&classname="+className)
+    try{
+        var response = await instance.post(backendURL + "modelnn?code="+code+"&classname="+className)
+        return [1, null, null]
+    }
+    catch(error){
+        return this.errorHandler(error)
+    }
     },
     async postModelParams(code){
-        return instance.post(backendURL + "modelParams?code="+code)
+        try {
+            var response = await instance.post(backendURL + "modelParams?code="+code)
+            // console.log("Response: ",response);
+            return [1, null, null]
+        } catch (error) {
+            return this.errorHandler(error)
+        }
+        
     },
     async postFLParams(agg, lr, rounds, nclients){
-        return instance.post(backendURL + "flParams?aggEpochs="+agg+"&lr="+lr+"&numRounds="+rounds+"&minClients="+nclients)
+        try {
+            var res = await instance.post(backendURL + "flParams?aggEpochs="+agg+"&lr="+lr+"&numRounds="+rounds+"&minClients="+nclients)
+            return [1, null, null]
+        } catch (error) {
+            return this.errorHandler(error);
+        }
+        
     },
     async login(username, password){
         var bodyFormData = new FormData();

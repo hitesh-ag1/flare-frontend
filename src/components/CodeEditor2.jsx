@@ -61,11 +61,19 @@ def transformFn():
 `);
     const editorRef = useRef(null);
     const navigate = useNavigate();
-    const handleSubmit = (event) => {
+    const handleSubmit = async(event) => {
       event.preventDefault();
       var code = (selected.replace(/(?:\r\n|\r|\n)/g, '\\n'));
-      api.postModelParams(code);
-      navigate('/flparams');
+      // api.postModelParams(code);
+      // navigate('/flparams');
+      var res = await api.postModelParams(code);
+      // console.log("Response: ", res);
+      if(res[0] == 1){
+        navigate('/flparams');
+      }
+      else{
+        alert("Error code: "+res[1]+" with message "+res[2]);
+      }
     }
   
 

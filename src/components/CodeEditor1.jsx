@@ -62,12 +62,18 @@ def getModel():
 
     const editorRef = useRef(null);
     const navigate = useNavigate();
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
       event.preventDefault();
       var code = (selected.replace(/(?:\r\n|\r|\n)/g, '\\n'));
       // console.log(code, name);
-      api.postNN(code, name);
-      navigate('/codeeditor2');
+      var res = await api.postNN(code, name);
+      if(res[0] == 1){
+        navigate('/codeeditor2');
+      }
+      else{
+        alert("Error code: "+res[1]+" with message "+res[2]);
+      }
+      
     }
   
 
