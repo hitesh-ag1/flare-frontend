@@ -7,6 +7,7 @@ import CodeEditor1 from './components/CodeEditor1';
 import CodeEditor2 from './components/CodeEditor2';
 import FLParams from './components/FLParams';
 import StartTraining from './components/StartTraining';
+import LiveTraining from './components/LiveTraining';
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="/codeeditor2" element={<CodeEditor2 />} />
           <Route path="/flparams" element={<FLParams />} />
           <Route path="/starttraining" element={<StartTraining />} />
+          <Route path="/livetraining" element={<LiveTraining />} />
         </Routes>
       </Router>
   )

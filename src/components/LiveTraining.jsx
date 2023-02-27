@@ -1,11 +1,13 @@
 import React from 'react';
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import logo from '../assets/logo.png';
 import { useNavigate } from "react-router-dom";
+import Plot from 'react-plotly.js';
+import api from '../../diagnokareApi';
 
 const sites = [
     { name: 'site-1', value: 'site-1' },
@@ -16,12 +18,49 @@ const sites = [
     // { name: 'site-6', value: 'site-6' },
   ]
 
-export default function StartTraining() {
+export default function LiveTraining() {
     const [selected, setSelected] = useState([sites[0]]);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const navigate = useNavigate()
+
+    const [data, setData] = useState({'site-1':[[],[]]});
+    const [cleanData, setCleanData] = useState([
+      // {
+      //   name: "site-1",
+      //   x: [0],
+      //   y: [0],
+      //   type: 'scatter',
+      // },
+    ])
+
+    useEffect(() => {
+      const fetchData = async () => {
+        const response = await api.trainingMetrics();
+        setData(response);
+        var keys = Object.keys(response)
+        var nsite = keys.length;
+        var siteData = []
+        for (let i = 1; i <= nsite; i++) {
+          siteData = ([...siteData, {
+            name: keys[i-1],
+            x: response[keys[i-1]][0],
+            y: response[keys[i-1]][1]
+          }])
+        }
+        setCleanData(siteData);
+        
+      };
+      const interval = setInterval(() => {
+        fetchData()
+      }, 60000);
+      fetchData()
+      return () => clearInterval(interval); 
+      ;
+    }, []);
+  
+
     const handleSubmitYes = () => {
-        navigate('/livetraining');
+        // navigate('/codeeditor1');
         // alert(selected.map(item => item.value).join(', '));
     };
     const handleSubmitNo = () => {
@@ -57,25 +96,43 @@ export default function StartTraining() {
         </svg>
       </div>
         <div className='w-full min-w-[500px]'>
-        <p className='pb-8 text-left text-2xl'>Step 5: Confirm Training</p>
+        <p className='pb-8 text-left text-2xl'>Model Training In Process...</p>
     <form>
     <div className="md:flex md:items-center mb-6">
       <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
-        Are you sure you want to start training?
+        Training Metrics
       </label>
       </div>
     <div className="inline-flex">
-    <div className="md:w-1/2 px-6">
-    <button className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" onClick={handleSubmitYes}>
-        Yes
-      </button>
-      </div>
-      <div className="md:w-1/2 px-6">
-    <button className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" onClick={handleSubmitNo}>
-        No
-      </button>
-      </div>
-      </div>
+    <Plot
+        data={cleanData
+        //   [
+        //   {
+        //     name: "site-1",
+        //     x: data['site-1'][0],
+        //     y: data['site-1'][1],
+        //     type: 'scatter',
+        //   },
+        //   {
+        //     name: "site-2",
+        //     x: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        //     y: [0.45, 0.56, 0.68, 0.73, 0.85, 0.87, 0.88, 0.89, 0.892],
+        //     type: 'scatter',
+        //   },
+        // ]
+        }
+        layout={{
+          "title": "Global Model Validation Accuracy",
+          "xaxis": {
+            "title": "Epochs"
+          },
+          "yaxis": {
+            "title": "Accuracy"
+          }
+        }}
+        // layout={{width: 620, height: 400, title: 'Validation Accuracy',"xaxis.title": "Accuracy", "yaxis.title": "Epochs"}}
+      />
+    </div>
 
   </form>
   </div>

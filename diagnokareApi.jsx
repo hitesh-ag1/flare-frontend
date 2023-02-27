@@ -47,6 +47,15 @@ export default {
         }
         
     },
+    async trainingMetrics(){
+        var job_id = "c6dff9f8-096c-4896-9560-64881c4d94a1"
+        try{
+            var res = await instance.get(backendURL + "getLiveTrainingMetrics?job_id="+job_id)
+            return res.data;
+        } catch (error) {
+            return this.errorHandler(error);
+        }
+    },
     async login(username, password){
         var bodyFormData = new FormData();
         bodyFormData.append('username', username);
