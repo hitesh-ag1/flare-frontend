@@ -8,7 +8,7 @@ import CodeEditor2 from './components/CodeEditor2';
 import FLParams from './components/FLParams';
 import StartTraining from './components/StartTraining';
 import LiveTraining from './components/LiveTraining';
-
+import Results from './components/Results';
 function App() {
 
   return (
@@ -21,6 +21,7 @@ function App() {
           <Route path="/flparams" element={<FLParams />} />
           <Route path="/starttraining" element={<StartTraining />} />
           <Route path="/livetraining" element={<LiveTraining />} />
+          <Route path="/results" element={<Results />} />
         </Routes>
       </Router>
   )

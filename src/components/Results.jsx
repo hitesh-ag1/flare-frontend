@@ -15,34 +15,40 @@ import brace from 'brace';
 import 'brace/theme/monokai';
 import Modal from 'react-modal';
 
-export default function LiveTraining() {
+export default function Results() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const navigate = useNavigate()
     const editorRef = useRef(null);
     const [trainingLogs, setTrainingLogs] = useState("Loading...");
-    const [data, setData] = useState({'site-1':[[],[]]});
+    const [accuracy, setAccuracy] = useState({'site-1':[]});
+    const [data, setData] = useState({'site-1':[]});
+    const [avgData, setAvgData] = useState([0,0])
     const [cleanData1, setCleanData1] = useState([]);
     const [cleanData2, setCleanData2] = useState([]);
     const [showMetrics, setShowMetrics] = useState(false);
     const [showLogs, setShowLogs] = useState(false);
+    const [detailedAcc, setDetailedAcc] = useState(false);
     const [status, setStatus] = useState("Inititalizing...")
     const fetchData = async () => {
-      var response = await api.latesttrainingMetrics();
-      if(response[0] == 1){
-      response = response[1]
-      if(response == 1){
-        setStatus("Finished successfully")
-        // JOB COMPLETED
-      }
-      else if((response == 0) | (response == {})){
-        setStatus("Training started... Please wait for metrics to be generated.")
-        // JOB SUBMITTED - PLEASE WAIT
-      }
-      else if(response == -1){
-        setStatus("Training stopped: Error occured or aborted job")
-        // JOB ABORTED/EXCEPTION
+      var avgacc = await api.viewLatestAvgResults()
+      var acc = await api.viewLatestResults()
+      if(avgacc[0] == 1){
+        console.log(acc[1])
+        setAvgData(avgacc[1]);
       }
       else{
+        alert("Error in getting results: "+avgacc[1]+" with message "+avgacc[2])
+      }
+      if(acc[0] == 1){
+        console.log(acc[1])
+        setAccuracy(acc[1]);
+      }
+      else{
+        alert("Error in getting results: "+acc[1]+" with message "+acc[2])
+      }
+      var response = await api.latesttrainingMetrics(true);
+      if(response[0] == 1){
+      response = response[1]
       setData(response);
       var keys = Object.keys(response)
       var nsite = keys.length;
@@ -66,27 +72,22 @@ export default function LiveTraining() {
       }
       setCleanData2(siteData2);
       }
-      }
-      else{
-        alert("Error in loading tensorboard metrics: "+response[1]+" with message "+response[2]);
-      }
-      const response2 = await api.latesttrainingLogs();
-      if(response2[0] == 1){
-        setTrainingLogs(response2[1]);
-      }
-      else{
-        alert("Error in loading training logs: "+response2[1]+" with message "+response2[2]);
-      }
+      // }
+      // else{
+      //   alert("Error in loading tensorboard metrics: "+response[1]+" with message "+response[2]);
+      // }
+      // const response2 = await api.latesttrainingLogs();
+      // if(response2[0] == 1){
+      //   setTrainingLogs(response2[1]);
+      // }
+      // else{
+      //   alert("Error in loading training logs: "+response2[1]+" with message "+response2[2]);
+      // }
       
     };
     
     useEffect(() => {
-      const interval = setInterval(() => {
-        fetchData()
-      }, 60000);
       fetchData()
-      return () => clearInterval(interval); 
-      ;
     }, []);
   
     const handleHomePage = () => {
@@ -138,14 +139,27 @@ export default function LiveTraining() {
         </svg>
       </div>
         <div className='w-full min-w-[500px]'>
-        <p className='pb-8 text-left text-2xl'>Model Training In Process...</p>
-        <p className='text-left text-l pb-4'> Status: {status}</p>
+        <p className='pb-8 text-left text-2xl'>View Results</p>
+        <div className='flex-col justify-start items-center pb-4'>
+        <div className='text-left justify-start text-lg'>
+          Train accuracy: {avgData[0].toFixed(2)}
+        </div>
+        <div className='text-left justify-start text-lg'>
+          Test accuracy: {avgData[1].toFixed(2)}
+        </div>
+        </div>
         <div className='flex space-x-4'>
         <button
         className="bg-blue-500 text-white font-bold py-2 px-4 rounded"
         onClick={() => setShowMetrics(true)}
       >
         Show Metrics
+      </button>
+      <button
+        className="bg-blue-500 text-white font-bold py-2 px-4 rounded"
+        onClick={() => setDetailedAcc(true)}
+      >
+      Detailed Accuracies
       </button>
       <button
         className="bg-blue-500 text-white font-bold py-2 px-4 rounded"
@@ -158,12 +172,6 @@ export default function LiveTraining() {
         onClick={() => handleHomePage()}
       >
       Home Page
-      </button>
-      <button
-        className="bg-red-500 text-white font-bold py-2 px-4 rounded"
-        onClick={() => handleAbortJob()}
-      >
-        Abort Training
       </button>
       {status == 'Finished successfully' && 
       <button
@@ -217,13 +225,6 @@ export default function LiveTraining() {
         // layout={{width: 620, height: 400, title: 'Validation Accuracy',"xaxis.title": "Accuracy", "yaxis.title": "Epochs"}}
       />
     </div>
-    <button
-        className="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-4"
-        onClick={() => handleRefresh()}
-      >
-        Refresh Metrics
-      </button>
-
     </div>
     </Modal>
     <Modal
@@ -255,13 +256,73 @@ export default function LiveTraining() {
         className='min-w-[800px] text-left'
       />
       </div>
-      <button
-        className="bg-blue-500 text-white font-bold py-2 px-4 rounded"
-        onClick={() => handleRefresh()}
-      >
-        Refresh Logs
-      </button>
   
+      </div>
+      </Modal>
+      <Modal
+        isOpen={detailedAcc}
+        className="bg-white rounded shadow-xl p-4"
+        overlayClassName="fixed h-full w-full top-0 left-0 flex items-center justify-center"
+        onRequestClose={() => setDetailedAcc(false)}
+      >
+    <div className="md:flex mb-6 flex-col pt-3">
+    <div className="md:w-1/5 py-2">
+    <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+        Detailed Accuracies
+    </label>
+    </div>
+    <div className="md:w-4/5 py-2">
+    <p className='text-left text-lg pb-4 min-w-[500px] p-6'>
+        Train Data:
+        <table className="border-2 border-gray-500">
+      <thead>
+        <tr>
+          <th className='px-4 py-2 text-left text-lg font-medium text-gray-800 bg-gray-100 border-b border-gray-500'>Site Name</th>
+          {(['Global', 'Site-1', 'Site-2']).map((fileName) => (
+            <th className="px-4 py-2 text-left text-lg font-medium text-gray-800 bg-gray-100 border-b border-gray-500" key={fileName}>{fileName}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {Object.keys(accuracy).map((site) => (
+          <tr key={site}>
+            <td className='px-4 py-2 text-left border border-gray-500'>{site}</td>
+            {Object.keys(accuracy[Object.keys(data)[0]]).map((fileName) => (
+              <td className="px-4 py-2 text-left border border-gray-500" key={fileName}>
+                  <span>{accuracy[site][fileName].train_accuracy.toFixed(2)}</span>
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+Test Data:
+    <table className="border-2 border-gray-500">
+      <thead>
+        <tr>
+          <th className='px-4 py-2 text-left text-lg font-medium text-gray-800 bg-gray-100 border-b border-gray-500'>Site Name</th>
+          {(['Global', 'Site-1', 'Site-2']).map((fileName) => (
+            <th className="px-4 py-2 text-left text-lg font-medium text-gray-800 bg-gray-100 border-b border-gray-500" key={fileName}>{fileName}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {Object.keys(accuracy).map((site) => (
+          <tr key={site}>
+            <td className='px-4 py-2 text-left border border-gray-500'>{site}</td>
+            {Object.keys(accuracy[Object.keys(data)[0]]).map((fileName) => (
+              <td className="px-4 py-2 text-left border border-gray-500" key={fileName}>
+                  <span>{accuracy[site][fileName].val_accuracy.toFixed(2)}</span>
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+        </p>
+
+      </div>  
       </div>
       </Modal>
 

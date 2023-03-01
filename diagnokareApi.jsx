@@ -1,8 +1,8 @@
 import axios from "axios"
 
 var instance = axios.create();
-var backendURL = 'http://localhost:8000/';
-// var orthancURL = 'https://demo-orthanc.diagnokare.com/';
+var backendURL = 'http://127.0.0.1:8000/';
+var prodURL = 'http://52.66.212.61/';
 // var backendURL = 'https://demo-backend.diagnokare.com/';
 
 // instance.interceptors.response.use(response => {
@@ -47,11 +47,65 @@ export default {
         }
         
     },
-    async trainingMetrics(){
-        var job_id = "c6dff9f8-096c-4896-9560-64881c4d94a1"
+    async latesttrainingMetrics(aws=false){
+        
         try{
-            var res = await instance.get(backendURL + "getLiveTrainingMetrics?job_id="+job_id)
-            return res.data;
+            if(aws==false){
+                var res = await instance.get(backendURL + "getLatestTrainingMetrics/")
+                return [1, res.data];    
+            }
+            else{
+                var res = await instance.get(backendURL + "getLatestTrainingMetrics/"+"?aws=true")
+                return [1, res.data];    
+            }
+        } catch (error) {
+            return this.errorHandler(error);
+        }
+    },
+    async latesttrainingLogs(){
+        try{
+            var res = await instance.get(backendURL + "latestTrainingLogs/")
+            return [1, res.data];
+        } catch (error) {
+            return this.errorHandler(error);
+        }
+    },
+    async abortLatestJob(){
+        try{
+            var res = await instance.delete(backendURL + "abortLatestJob/")
+            return [1, res.data];
+        } catch (error) {
+            return this.errorHandler(error);
+        }
+    },
+    async viewLatestResults(){
+        try{
+            var res = await instance.get(backendURL + "getLatestAccuracies/")
+            return [1, res.data];
+        } catch (error) {
+            return this.errorHandler(error);
+        }
+    },
+    async viewLatestAvgResults(){
+        try{
+            var res = await instance.get(backendURL + "getLatestAvgAccuracies/")
+            return [1, res.data];
+        } catch (error) {
+            return this.errorHandler(error);
+        }
+    },
+    async viewJobs(){
+        try{
+            var res = await instance.get(backendURL + "allJobs/")
+            return [1, res.data];
+        } catch (error) {
+            return this.errorHandler(error);
+        }
+    },
+    async submitJob(name){
+        try{
+            var res = await instance.get(backendURL + "submitJob/"+name)
+            return [1, res.data];
         } catch (error) {
             return this.errorHandler(error);
         }
